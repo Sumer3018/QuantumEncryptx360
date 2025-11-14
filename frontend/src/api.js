@@ -1,4 +1,8 @@
 // frontend/src/api.js
+// frontend/src/api.js — add for debugging (remove after)
+console.log("VITE_API_URL (build-time):", import.meta.env.VITE_API_URL);
+
+
 import { API_URL } from "./config.js";
 
 /* Helper for POST FormData expecting JSON response */

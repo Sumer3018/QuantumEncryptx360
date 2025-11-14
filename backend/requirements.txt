@@ -5,3 +5,4 @@ cryptography
 pennylane
 pennylane-lightning
 numpy
+python-dotenv

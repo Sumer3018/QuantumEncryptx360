@@ -7,19 +7,20 @@ import { API_URL } from "./config.js";
 
 /* Helper for POST FormData expecting JSON response */
 async function postFormJson(path, form) {
-  const res = await fetch(`${API_URL}${path}`, { method: "POST", body: form });
+  const fullUrl = `${API_URL}${path}`;
+  console.log("DEBUG: Fetching URL ->", fullUrl);     // <<--- debug line
+  const res = await fetch(fullUrl, { method: "POST", body: form });
   const text = await res.text();
-  // attempt to parse JSON; if fails return text
   try {
     const json = text ? JSON.parse(text) : {};
     if (!res.ok) throw { status: res.status, body: json, text };
     return json;
   } catch (err) {
     if (!res.ok) throw { status: res.status, text };
-    // parsing error but OK, return raw text
     return text;
   }
 }
+
 
 /* 1) session initiation */
 export async function initiateSession({ user_id, peer_id, simulate_eavesdropper = false }) {

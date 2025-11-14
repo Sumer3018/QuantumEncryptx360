@@ -4,7 +4,8 @@ import Button from './Button';
 import AnimatedCard from './AnimatedCard';
 import { motion } from 'framer-motion';
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import { decryptFileDownload } from "../api.js"; // path may be "../api.js" from components folder
+
 
 export default function Decryptor({
   onDecryptPreview,
@@ -25,36 +26,32 @@ export default function Decryptor({
   };
   
   const handleDownload = async () => {
-    const formData = new FormData();
-    formData.append('user_id', currentUser);
-    formData.append('peer_id', peerUser);
-    formData.append('nonce', components.nonce);
-    formData.append('tag', components.tag);
-    formData.append('ciphertext', components.ciphertext);
+  try {
+    const response = await decryptFileDownload({
+      user_id: currentUser,
+      peer_id: peerUser,
+      nonce: components.nonce,
+      tag: components.tag,
+      ciphertext: components.ciphertext
+    });
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/decrypt-file`, {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.detail || 'Download failed');
-      }
-      
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'decrypted_file';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    }
-  };
+    // Convert response to blob and trigger download
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'decrypted_file';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    // error can be object thrown in decryptFileDownload
+    const msg = error?.message || (error?.text || JSON.stringify(error)) || 'Download failed';
+    alert(`Error: ${msg}`);
+  }
+};
+
 
   return (
     <AnimatedCard isDisabled={isDisabled}>

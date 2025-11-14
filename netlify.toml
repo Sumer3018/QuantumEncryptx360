@@ -1,7 +1,15 @@
+cd D:\Quantum_Encryption_System
+
+# Overwrite netlify.toml with the correct content
+@"
 [build]
   base = "frontend"
-  publish = "build"
+  publish = "dist"
   command = "npm ci && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
+"@ > netlify.toml
+
+# Verify
+Get-Content netlify.toml

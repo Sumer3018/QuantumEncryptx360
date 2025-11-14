@@ -1,3 +1,20 @@
-/backend/venv
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+env/
+*.sqlite3
 
-/frontend/node_modules
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+build/
+dist/
+
+# IDEs / OS
+.vscode/
+.DS_Store
+Thumbs.db
